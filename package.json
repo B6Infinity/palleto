@@ -10,6 +10,10 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:html",
+    "onLanguage:css",
+    "onLanguage:javascript",
+    
     "onCommand:palleto.helloWorld",
     "onCommand:palleto.openPanel",
     "onCommand:palleto.init"

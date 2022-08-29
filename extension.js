@@ -9,14 +9,12 @@ console.log('Running "palleto"');
 
 
 let palleteData = {};
-initPallete();
 
 
 function activate(context) {
 	initPallete();
 	
 
-	vscode.window.showInformationMessage(`Initialised Pallete. ${Object.keys(palleteData).length} colors found`);
 	
 
 	// context.subscriptions.push(vscode.commands.registerCommand('palleto.helloWorld', function () {
@@ -29,23 +27,7 @@ function activate(context) {
 	
 
 
-	context.subscriptions.push(vscode.commands.registerCommand('palleto.openPanel', function () {
-
-		
-
-		const panel = vscode.window.createWebviewPanel(
-			'pallete', // Identifies the type of the webview. Used internally
-			'Pallete', // Title of the panel displayed to the user
-			vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
-			{
-				enableScripts: true
-			} // Webview options. More on these later.
-		);
-		panel.webview.html = getWebviewContent();
-			
-		
-
-	})); // This is How to add commands
+	context.subscriptions.push(vscode.commands.registerCommand('palleto.openPanel', openPalletePanel)); // This is How to add commands
 	
 
 	
@@ -226,8 +208,29 @@ function initPallete(){
 			let palleteFile = palletes[0];
 
 			vscode.workspace.openTextDocument(palleteFile).then((document) => {
-				palleteData = JSON.parse(document.getText());
+				palleteData = JSON.parse(document.getText());				
+				vscode.window.showInformationMessage(`Initialised Pallete. ${Object.keys(palleteData).length} colors found`, 'Open Pallete').then(
+					(value) => {
+						if (value) {
+							openPalletePanel();
+						}
+					});
 			});
 		}
 	});
+}
+
+function  openPalletePanel(){
+
+	const panel = vscode.window.createWebviewPanel(
+		'pallete', // Identifies the type of the webview. Used internally
+		'Pallete', // Title of the panel displayed to the user
+		vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
+		{
+			enableScripts: true
+		} // Webview options. More on these later.
+	);
+	panel.webview.html = getWebviewContent();
+		
+
 }
