@@ -1,5 +1,3 @@
-const { FILE } = require('dns');
-const { type } = require('os');
 const vscode = require('vscode');
 
 /**
@@ -7,23 +5,33 @@ const vscode = require('vscode');
  */
 
 
+console.log('Running "palleto"');
+
+
+let palleteData = {};
+initPallete();
+
+
 function activate(context) {
-
-	console.log('Running "palleto"');
-	let palleteData = {};
-
+	initPallete();
 	
 
-	context.subscriptions.push(vscode.commands.registerCommand('palleto.helloWorld', function () {
-		vscode.window.showInformationMessage('Commands are working.');
+	vscode.window.showInformationMessage(`Initialised Pallete. ${Object.keys(palleteData).length} colors found`);
+	
+
+	// context.subscriptions.push(vscode.commands.registerCommand('palleto.helloWorld', function () {
+	// 	vscode.window.showInformationMessage('Commands are working.');
+	// })); // This is How to add commands
+
+	context.subscriptions.push(vscode.commands.registerCommand('palleto.init', function () {
+		initPallete();
 	})); // This is How to add commands
 	
 
 
 	context.subscriptions.push(vscode.commands.registerCommand('palleto.openPanel', function () {
 
-		vscode.window.showInformationMessage('Pallete opened.');
-
+		
 
 		const panel = vscode.window.createWebviewPanel(
 			'pallete', // Identifies the type of the webview. Used internally
@@ -33,27 +41,8 @@ function activate(context) {
 				enableScripts: true
 			} // Webview options. More on these later.
 		);
-			
-		// Get Or Create .pallete file		
-		vscode.workspace.findFiles('*.pallete').then((value) => {
-			let palletes = value;
-			if(palletes.length == 0){
-				// Create .pallete File
-
-
-			}else{
-				// Open and read pallete file
-				let palleteFile = palletes[0];
-
-				vscode.workspace.openTextDocument(palleteFile).then((document) => {
-					palleteData = JSON.parse(document.getText());
-					console.log(palleteData);
-				});
-			}
-			
-		});
-		
 		panel.webview.html = getWebviewContent();
+			
 		
 
 	})); // This is How to add commands
@@ -71,7 +60,39 @@ module.exports = {
 
 function getWebviewContent(){
 
-	console.log(vscode.workspace.name);
+	vscode.workspace.findFiles('*.pallete').then((value) => {
+		let palletes = value;
+		if(palletes.length == 0){
+			// Create .pallete File
+			// 
+			// 
+		}else{
+			// Open and read pallete file
+			let palleteFile = palletes[0];
+
+			vscode.workspace.openTextDocument(palleteFile).then((document) => {
+				palleteData = JSON.parse(document.getText());
+				console.log(palleteData);
+			});
+		}
+	});
+	console.log(palleteData, "OUT");
+
+
+	let colorNodes__HTML = ``;
+
+	for (let color in palleteData) {
+		console.log(color);
+		colorNodes__HTML += `
+		<div class="color-node" onclick="copyHexToClipBoard(this);" style="background-color: ${color}">
+			<div class="copy2clipboard">
+				<div class="colorhex">${color}</div>
+				<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+			</div>
+		</div>
+
+		`;
+	}
 	
 	return `<!DOCTYPE html>
 	<html lang="en">
@@ -85,30 +106,8 @@ function getWebviewContent(){
 	
 		<div class="colorCarousel">
 	
-			<div class="color-node" onclick="copyHexToClipBoard(this);">
-				<div class="copy2clipboard">
-					<div class="colorhex">#??????</div>
-					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
-				</div>
-			</div>
-			<div class="color-node" onclick="copyHexToClipBoard(this);">
-				<div class="copy2clipboard">
-					<div class="colorhex">#??????</div>
-					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
-				</div>
-			</div>
-			<div class="color-node" onclick="copyHexToClipBoard(this);">
-				<div class="copy2clipboard">
-					<div class="colorhex">#??????</div>
-					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
-				</div>
-			</div>
-			<div class="color-node" onclick="copyHexToClipBoard(this);">
-				<div class="copy2clipboard">
-					<div class="colorhex">#??????</div>
-					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
-				</div>
-			</div>
+			${colorNodes__HTML}
+			
 	
 		</div>
 	</body>
@@ -212,4 +211,23 @@ function getWebviewContent(){
 	</script>
 	</html>
 	`;
+}
+
+function initPallete(){
+	// Get Or Create .pallete file		
+	vscode.workspace.findFiles('*.pallete').then((value) => {
+		let palletes = value;
+		if(palletes.length == 0){
+			// Create .pallete File
+			// 
+			// 
+		}else{
+			// Open and read pallete file
+			let palleteFile = palletes[0];
+
+			vscode.workspace.openTextDocument(palleteFile).then((document) => {
+				palleteData = JSON.parse(document.getText());
+			});
+		}
+	});
 }

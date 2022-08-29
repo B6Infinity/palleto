@@ -11,7 +11,8 @@
   ],
   "activationEvents": [
     "onCommand:palleto.helloWorld",
-    "onCommand:palleto.openPanel"
+    "onCommand:palleto.openPanel",
+    "onCommand:palleto.init"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -24,6 +25,11 @@
       "command": "palleto.openPanel",
       "category": "Palleto",
       "title": "Open Pallete"
+    },
+    {
+      "command": "palleto.init",
+      "category": "Palleto Init",
+      "title": "Initialise Pallete"
     }
   ]
   },
