@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Coding</title>
+</head>
+<body>
+    <h1>${vscode.workspace.name} Pallete</h1>
+
+    <div class="colorCarousel">
+
+        <div class="color-node" onclick="copyHexToClipBoard(this);">
+            <div class="copy2clipboard">
+                <div class="colorhex">#??????</div>
+                <div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+            </div>
+        </div>
+        <div class="color-node" onclick="copyHexToClipBoard(this);">
+            <div class="copy2clipboard">
+                <div class="colorhex">#??????</div>
+                <div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+            </div>
+        </div>
+        <div class="color-node" onclick="copyHexToClipBoard(this);">
+            <div class="copy2clipboard">
+                <div class="colorhex">#??????</div>
+                <div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+            </div>
+        </div>
+        <div class="color-node" onclick="copyHexToClipBoard(this);">
+            <div class="copy2clipboard">
+                <div class="colorhex">#??????</div>
+                <div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<style>
+    *{
+        color: white;
+        font-family: 'Arial';
+
+        /* DEBUGGING */
+        /* background-color: rgba(179, 255, 0, 0.421); */
+    }
+    html, body{
+        background: rgb(20, 20, 20);
+    }
+    .colorCarousel{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /* background-color: aqua; */
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .color-node:hover{
+    opacity: 0.8;
+    }
+    .color-node{
+        background-color: #5db820;
+        /* height: 100px; */
+        width: 100px;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 20px;
+    }
+    
+    .copy2clipboard{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+    .colorhex{
+        font-size: 20px;
+        padding: 20px;
+        font-weight: 700;
+        text-shadow: 5px 5px 5px black;
+    }
+    .copy2clipboard_prompt{
+        margin: 10px;
+        color: white;
+        text-shadow: 5px 5px 5px black;
+        visibility: hidden;
+        user-select: none;
+    }
+    .copy2clipboard:hover .copy2clipboard_prompt{
+        visibility: visible;
+    }
+    
+</style>
+<script>
+    function copyHexToClipBoard(colorNode){
+        let color = window.getComputedStyle( colorNode ,null).getPropertyValue('background-color').replace('rgb(','');
+        // console.log(color);
+        let hex = rgb2hex(color.replace(')', ''));
+        console.log(hex);
+        
+        // navigator.clipboard.writeText(hex);
+        unsecuredCopyToClipboard(hex);
+    }
+
+    function rgb2hex(color){
+        let comma_at = color.indexOf(',');
+        
+        let r = Number(color.slice(0, comma_at));
+        
+        color = color.replace(r.toString()+',', '');
+        comma_at = color.indexOf(',');
+        let g = Number(color.slice(0, comma_at));
+        color = color.replace(g.toString()+',', '');
+        comma_at = color.indexOf(',');
+        
+        let b = Number(color);
+
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+    }
+    
+    function unsecuredCopyToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Unable to copy to clipboard', err);
+        }
+        document.body.removeChild(textArea);
+    }
+</script>
+</html>

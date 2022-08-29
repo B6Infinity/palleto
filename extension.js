@@ -1,36 +1,215 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+const { FILE } = require('dns');
+const { type } = require('os');
 const vscode = require('vscode');
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 
 /**
  * @param {vscode.ExtensionContext} context
  */
+
+
 function activate(context) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "palleto" is now active!');
+	console.log('Running "palleto"');
+	let palleteData = {};
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('palleto.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
+	
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Palleto!');
-	});
+	context.subscriptions.push(vscode.commands.registerCommand('palleto.helloWorld', function () {
+		vscode.window.showInformationMessage('Commands are working.');
+	})); // This is How to add commands
+	
 
-	context.subscriptions.push(disposable);
+
+	context.subscriptions.push(vscode.commands.registerCommand('palleto.openPanel', function () {
+
+		vscode.window.showInformationMessage('Pallete opened.');
+
+
+		const panel = vscode.window.createWebviewPanel(
+			'pallete', // Identifies the type of the webview. Used internally
+			'Pallete', // Title of the panel displayed to the user
+			vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
+			{
+				enableScripts: true
+			} // Webview options. More on these later.
+		);
+			
+		// Get Or Create .pallete file		
+		vscode.workspace.findFiles('*.pallete').then((value) => {
+			let palletes = value;
+			if(palletes.length == 0){
+				// Create .pallete File
+
+
+			}else{
+				// Open and read pallete file
+				let palleteFile = palletes[0];
+
+				vscode.workspace.openTextDocument(palleteFile).then((document) => {
+					palleteData = JSON.parse(document.getText());
+					console.log(palleteData);
+				});
+			}
+			
+		});
+		
+		panel.webview.html = getWebviewContent();
+		
+
+	})); // This is How to add commands
+	
+
+	
 }
 
-// this method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
 	activate,
 	deactivate
+}
+
+function getWebviewContent(){
+
+	console.log(vscode.workspace.name);
+	
+	return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Cat Coding</title>
+	</head>
+	<body>
+		<h1>${vscode.workspace.name} Pallete</h1>
+	
+		<div class="colorCarousel">
+	
+			<div class="color-node" onclick="copyHexToClipBoard(this);">
+				<div class="copy2clipboard">
+					<div class="colorhex">#??????</div>
+					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+				</div>
+			</div>
+			<div class="color-node" onclick="copyHexToClipBoard(this);">
+				<div class="copy2clipboard">
+					<div class="colorhex">#??????</div>
+					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+				</div>
+			</div>
+			<div class="color-node" onclick="copyHexToClipBoard(this);">
+				<div class="copy2clipboard">
+					<div class="colorhex">#??????</div>
+					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+				</div>
+			</div>
+			<div class="color-node" onclick="copyHexToClipBoard(this);">
+				<div class="copy2clipboard">
+					<div class="colorhex">#??????</div>
+					<div class="copy2clipboard_prompt" style="text-align: center;">Copy to Clipboard</div>
+				</div>
+			</div>
+	
+		</div>
+	</body>
+	<style>
+		*{
+			color: white;
+			font-family: 'Arial';
+	
+			/* DEBUGGING */
+			/* background-color: rgba(179, 255, 0, 0.421); */
+		}
+		html, body{
+			background: rgb(20, 20, 20);
+		}
+		.colorCarousel{
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			/* background-color: aqua; */
+			margin: 10px;
+			padding: 10px;
+		}
+	
+		.color-node:hover{
+		opacity: 0.8;
+		}
+		.color-node{
+			background-color: #5db820;
+			/* height: 100px; */
+			width: 100px;
+			border-radius: 5px;
+			padding: 10px;
+			margin: 20px;
+		}
+		
+		.copy2clipboard{
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+			align-items: center;
+		}
+		.colorhex{
+			font-size: 20px;
+			padding: 20px;
+			font-weight: 700;
+			text-shadow: 5px 5px 5px black;
+		}
+		.copy2clipboard_prompt{
+			margin: 10px;
+			color: white;
+			text-shadow: 5px 5px 5px black;
+			visibility: hidden;
+			user-select: none;
+		}
+		.copy2clipboard:hover .copy2clipboard_prompt{
+			visibility: visible;
+		}
+		
+	</style>
+	<script>
+		function copyHexToClipBoard(colorNode){
+			let color = window.getComputedStyle( colorNode ,null).getPropertyValue('background-color').replace('rgb(','');
+			// console.log(color);
+			let hex = rgb2hex(color.replace(')', ''));
+			console.log(hex);
+			
+			// navigator.clipboard.writeText(hex);
+			unsecuredCopyToClipboard(hex);
+		}
+	
+		function rgb2hex(color){
+			let comma_at = color.indexOf(',');
+			
+			let r = Number(color.slice(0, comma_at));
+			
+			color = color.replace(r.toString()+',', '');
+			comma_at = color.indexOf(',');
+			let g = Number(color.slice(0, comma_at));
+			color = color.replace(g.toString()+',', '');
+			comma_at = color.indexOf(',');
+			
+			let b = Number(color);
+	
+			return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	
+		}
+		
+		function unsecuredCopyToClipboard(text) {
+			const textArea = document.createElement("textarea");
+			textArea.value = text;
+			document.body.appendChild(textArea);
+			textArea.focus();
+			textArea.select();
+			try {
+				document.execCommand('copy');
+			} catch (err) {
+				console.error('Unable to copy to clipboard', err);
+			}
+			document.body.removeChild(textArea);
+		}
+	</script>
+	</html>
+	`;
 }

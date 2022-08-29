@@ -10,14 +10,22 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:palleto.helloWorld"
+    "onCommand:palleto.helloWorld",
+    "onCommand:palleto.openPanel"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [{
       "command": "palleto.helloWorld",
+      "category": "Palleto",
       "title": "Hello World"
-    }]
+    },
+    {
+      "command": "palleto.openPanel",
+      "category": "Palleto",
+      "title": "Open Pallete"
+    }
+  ]
   },
   "scripts": {
     "lint": "eslint .",
