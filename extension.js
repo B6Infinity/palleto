@@ -15,19 +15,38 @@ function activate(context) {
 	initPallete();
 	
 
-	
-
-	// context.subscriptions.push(vscode.commands.registerCommand('palleto.helloWorld', function () {
-	// 	vscode.window.showInformationMessage('Commands are working.');
-	// })); // This is How to add commands
-
 	context.subscriptions.push(vscode.commands.registerCommand('palleto.init', function () {
 		initPallete();
 	})); // This is How to add commands
 	
 
 
-	context.subscriptions.push(vscode.commands.registerCommand('palleto.openPanel', openPalletePanel)); // This is How to add commands
+	context.subscriptions.push(vscode.commands.registerCommand('palleto.openPanel', function () {
+		const panel = vscode.window.createWebviewPanel(
+			'pallete', // Identifies the type of the webview. Used internally
+			'Pallete', // Title of the panel displayed to the user
+			vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
+			{
+				enableScripts: true
+			} // Webview options. More on these later.
+		);
+		panel.webview.html = getWebviewContent();
+	}));
+
+	// eslint-disable-next-line no-undef
+	panel.webview.onDidReceiveMessage(
+        message => {
+			console.log(message);
+          switch (message.command) {
+            case 'alert':
+              vscode.window.showErrorMessage(message.text);
+              return;
+          }
+        },
+        undefined,
+        context.subscriptions
+    
+	); // This is How to add commands
 	
 
 	
@@ -54,17 +73,17 @@ function getWebviewContent(){
 
 			vscode.workspace.openTextDocument(palleteFile).then((document) => {
 				palleteData = JSON.parse(document.getText());
-				console.log(palleteData);
+				
 			});
 		}
 	});
-	console.log(palleteData, "OUT");
+	// console.log(palleteData, "OUT");
 
 
 	let colorNodes__HTML = ``;
 
 	for (let color in palleteData) {
-		console.log(color);
+		// console.log(color);
 		colorNodes__HTML += `
 		<div class="color-node" onclick="copyHexToClipBoard(this);" style="background-color: ${color}">
 			<div class="copy2clipboard">
@@ -92,6 +111,12 @@ function getWebviewContent(){
 			
 	
 		</div>
+
+        <button onclick="addColor()">Add Color</button>
+
+		<div id="txtcmd">stuff</div>
+		
+
 	</body>
 	<style>
 		*{
@@ -147,6 +172,13 @@ function getWebviewContent(){
 		.copy2clipboard:hover .copy2clipboard_prompt{
 			visibility: visible;
 		}
+
+        button{
+            background-color: black;
+            padding: 10px;
+            font-size: 20px;
+            border-radius: 5px;
+        }
 		
 	</style>
 	<script>
@@ -190,6 +222,23 @@ function getWebviewContent(){
 			}
 			document.body.removeChild(textArea);
 		}
+
+
+		
+        const vscode = acquireVsCodeApi();
+
+		function addColor(){
+            // Ask Backend to add color
+			try{
+			vscode.postMessage({
+				command: 'alert',
+				text: '🐛 Add Color'
+			})
+			}catch(err) {
+				document.getElementById("txtcmd").innerHTML = err.message;
+			  }
+        }
+
 	</script>
 	</html>
 	`;
@@ -218,19 +267,4 @@ function initPallete(){
 			});
 		}
 	});
-}
-
-function  openPalletePanel(){
-
-	const panel = vscode.window.createWebviewPanel(
-		'pallete', // Identifies the type of the webview. Used internally
-		'Pallete', // Title of the panel displayed to the user
-		vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
-		{
-			enableScripts: true
-		} // Webview options. More on these later.
-	);
-	panel.webview.html = getWebviewContent();
-		
-
 }

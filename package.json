@@ -13,6 +13,7 @@
     "onLanguage:html",
     "onLanguage:css",
     "onLanguage:javascript",
+    "onFileSystem:*.pallete",
     
     "onCommand:palleto.helloWorld",
     "onCommand:palleto.openPanel",
@@ -20,22 +21,26 @@
   ],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "palleto.helloWorld",
-      "category": "Palleto",
-      "title": "Hello World"
-    },
-    {
-      "command": "palleto.openPanel",
-      "category": "Palleto",
-      "title": "Open Pallete"
-    },
-    {
-      "command": "palleto.init",
-      "category": "Palleto Init",
-      "title": "Initialise Pallete"
-    }
-  ]
+    "commands": [
+      {
+        "command": "palleto.helloWorld",
+        "category": "Palleto",
+        "title": "Hello World"
+      },
+      {
+        "command": "palleto.openPanel",
+        "category": "Palleto",
+        "title": "Open Pallete"
+      },
+      {
+        "command": "palleto.init",
+        "category": "Palleto Init",
+        "title": "Initialise Pallete"
+      }
+    ],
+    "customEditors": [
+      
+    ]
   },
   "scripts": {
     "lint": "eslint .",
