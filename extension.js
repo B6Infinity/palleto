@@ -114,7 +114,6 @@ function getWebviewContent(){
 
         <button onclick="addColor()">Add Color</button>
 
-		<div id="txtcmd">stuff</div>
 		
 
 	</body>
@@ -235,7 +234,8 @@ function getWebviewContent(){
 				text: '🐛 Add Color'
 			})
 			}catch(err) {
-				document.getElementById("txtcmd").innerHTML = err.message;
+				document.getElementById("txtcmd").textContent = err.message;
+				// I can't fix this... VSCODE does not read this... Send Help please 😭
 			  }
         }
 
