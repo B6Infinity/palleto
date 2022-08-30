@@ -36,7 +36,6 @@ function activate(context) {
 	// eslint-disable-next-line no-undef
 	panel.webview.onDidReceiveMessage(
         message => {
-			console.log(message);
           switch (message.command) {
             case 'alert':
               vscode.window.showErrorMessage(message.text);
@@ -112,8 +111,9 @@ function getWebviewContent(){
 	
 		</div>
 
-        <button onclick="addColor()">Add Color</button>
+        <!--  <button onclick="addColor()">Add Color</button> -->
 
+		<!--   <div id="txtcmd">stuff</div>		-->
 		
 
 	</body>
@@ -234,7 +234,7 @@ function getWebviewContent(){
 				text: '🐛 Add Color'
 			})
 			}catch(err) {
-				document.getElementById("txtcmd").textContent = err.message;
+				document.getElementById("txtcmd").innerHTML = err.message;
 				// I can't fix this... VSCODE does not read this... Send Help please 😭
 			  }
         }
@@ -267,4 +267,18 @@ function initPallete(){
 			});
 		}
 	});
+}
+
+function  openPalletePanel(){
+
+	panel = vscode.window.createWebviewPanel(
+		'pallete', // Identifies the type of the webview. Used internally
+		'Pallete', // Title of the panel displayed to the user
+		vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
+		{
+			enableScripts: true
+		} // Webview options. More on these later.
+	);
+	panel.webview.html = getWebviewContent();
+		
 }
