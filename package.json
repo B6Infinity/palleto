@@ -15,18 +15,12 @@
     "onLanguage:javascript",
     "onFileSystem:*.pallete",
     
-    "onCommand:palleto.helloWorld",
     "onCommand:palleto.openPanel",
     "onCommand:palleto.init"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "palleto.helloWorld",
-        "category": "Palleto",
-        "title": "Hello World"
-      },
       {
         "command": "palleto.openPanel",
         "category": "Palleto",

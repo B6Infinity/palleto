@@ -235,7 +235,7 @@ function getWebviewContent(){
 			})
 			}catch(err) {
 				document.getElementById("txtcmd").innerHTML = err.message;
-				// I can't fix this... VSCODE does not read this... Send Help please 😭
+				// I can't fix this... VSCODE does not react to this (Line 37)... Send Help please 😭
 			  }
         }
 
