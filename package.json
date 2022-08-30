@@ -3,7 +3,7 @@
   "displayName": "Palleto",
   "publisher": "BroteenDas",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -15,7 +15,6 @@
     "onLanguage:css",
     "onLanguage:javascript",
     "onFileSystem:*.pallete",
-    
     "onCommand:palleto.openPanel",
     "onCommand:palleto.init"
   ],
@@ -33,9 +32,7 @@
         "title": "Initialise Pallete"
       }
     ],
-    "customEditors": [
-      
-    ]
+    "customEditors": []
   },
   "scripts": {
     "lint": "eslint .",
